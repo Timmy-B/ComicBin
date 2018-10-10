@@ -17,11 +17,7 @@ ComicBin
 ### Not complete
 
 - User login/logout
-
 - Save reading progress
-
 - smart list viewing
-
 - recently added list
-
 - Quantity stats.
