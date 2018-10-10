@@ -1,12 +1,12 @@
 ComicBin
 =============
 
-###Web UI for ComicRack
+### Web UI for ComicRack
 
 - Browse and search by Series.
 - Browse Series by Publisher.
 
-###Reading Features:
+### Reading Features:
 
 - Dual or Single page views
 - Auto two page layout detection
@@ -14,7 +14,7 @@ ComicBin
 - Elementary swipe support for next page turns
 - Metadata viewing - partial
 
-###Not complete
+### Not complete
 
 - User login/logout
 
