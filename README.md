@@ -35,7 +35,7 @@ ComicBin
 #### Search
 ![Search](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/search.png)
 #### Read Progress
-![Read Progress](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/publishers.png)
+![Read Progress](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/readprogress.png)
 #### Cover View
 ![Cover View](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/cover.png)
 #### 2 Page View
