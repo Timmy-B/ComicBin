@@ -21,3 +21,5 @@ ComicBin
 - smart list viewing
 - recently added list
 - Quantity stats.
+
+![2 Page View](https://raw.githubusercontent.com/Timmy-B/ComicBin/blob/master/examples/2page.jpg)
