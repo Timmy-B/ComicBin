@@ -23,8 +23,12 @@ ComicBin
 - Quantity stats.
 
 
-
-
+So why do another web reader?
+My reason for this is once you get a comicrack library built it has created a database with all this great metadata. 
+What if you want a web reader to browse all this? Well there are a few. All of them make their own database and none of them use comicrack's db. they either get the info out of the comic file or rescrape comicvine. 
+Browsing is typically done by folder structure.
+Reading is always a single page.
+I wanted something that is dual page and browsable by different options.
 
 ## Screenshots
 
