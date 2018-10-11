@@ -22,4 +22,15 @@ ComicBin
 - recently added list
 - Quantity stats.
 
-![2 Page View](https://raw.githubusercontent.com/Timmy-B/ComicBin/blob/master/examples/2page.jpg)
+
+
+
+
+
+
+![Publishers Browser](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/publishers.jpg)
+![Series Browser](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/series.jpg)
+![Search](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/search.jpg)
+![Read Progress](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/publishers.jpg)
+![Cover View](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/cover.jpg)
+![2 Page View](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/2page.jpg)
