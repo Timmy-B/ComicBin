@@ -26,11 +26,16 @@ ComicBin
 
 
 
+### Screenshots
 
+![Publishers Browser](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/publishers.png)
 
-![Publishers Browser](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/publishers.jpg)
-![Series Browser](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/series.jpg)
-![Search](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/search.jpg)
-![Read Progress](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/publishers.jpg)
-![Cover View](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/cover.jpg)
+![Series Browser](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/series.png)
+
+![Search](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/search.png)
+
+![Read Progress](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/publishers.png)
+
+![Cover View](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/cover.png)
+
 ![2 Page View](https://raw.githubusercontent.com/Timmy-B/ComicBin/master/examples/2page.jpg)
