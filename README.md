@@ -30,6 +30,16 @@ Browsing is typically done by folder structure.
 Reading is always a single page.
 I wanted something that is dual page and browsable by different options.
 
+Using ComicBin:
+comicrack plugin:
+https://github.com/Timmy-B/ComicRackWeb
+
+run
+> npm install
+> npm run build
+
+the contains of the dist folder must be copied into the tablet folder of the comicrack plugin
+
 ## Screenshots
 
 #### Publishers Browser
