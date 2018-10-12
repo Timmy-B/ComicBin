@@ -36,6 +36,7 @@ https://github.com/Timmy-B/ComicRackWeb
 
 run
 > npm install
+
 > npm run build
 
 the contains of the dist folder must be copied into the tablet folder of the comicrack plugin
