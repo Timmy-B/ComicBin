@@ -30,8 +30,10 @@ Browsing is typically done by folder structure.
 Reading is always a single page.
 I wanted something that is dual page and browsable by different options.
 
-Using ComicBin:
+##Using ComicBin:
+
 comicrack plugin:
+
 https://github.com/Timmy-B/ComicRackWeb
 
 run
