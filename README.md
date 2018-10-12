@@ -34,7 +34,7 @@ I wanted something that is dual page and browsable by different options.
 
 comicrack plugin:
 
-https://github.com/Timmy-B/ComicRackWeb
+[ComicRack Plugin](https://github.com/Timmy-B/ComicRackWeb/releases/download/a.1/ComicRackWebViewer.crplugin)
 
 run
 > npm install
