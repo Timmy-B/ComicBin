@@ -1,165 +1,210 @@
 <template>
-  <v-app dark>
-    <v-navigation-drawer clipped v-model="drawer" app>
-      <v-list>
-        <v-list-tile value="true" v-for="(item, i) in menuItems" :key="i" :to="item.path">
-          <v-list-tile-action>
-            <v-icon v-html="item.icon"></v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title v-text="item.title"></v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
-    <v-toolbar v-model="mainToolbar" app>
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-btn class="back-btn hidden" v-on:click="back">
-        <v-icon class="mx-3">reply</v-icon>Back</v-btn>
-      <v-toolbar-title v-text="this.title"></v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-layout row align-center style="max-width: 650px">
-        <v-text-field class="searchBar" placeholder="Search..." single-line append-icon="search" color="white" hide-details v-model="search"></v-text-field>
-      </v-layout>
-    </v-toolbar>
-    <v-content class="test">
-      <router-view></router-view>
-    </v-content>
-  </v-app>
+  <div>
+    <template v-if="!$route.meta.allowAnonymous">
+      <v-app id="inspire">
+        <div class="app-container">
+          <toolbar @toggleNavigationBar="drawer = !drawer" />
+          <navigation :drawer.sync="drawer" />
+          <v-content>
+            <!-- <breadcrumbs /> -->
+            <router-view />
+            <!-- <page-footer /> -->
+          </v-content>
+        </div>
+      </v-app>
+    </template>
+    <template v-else>
+      <transition>
+        <keep-alive>
+          <router-view></router-view>
+        </keep-alive>
+      </transition>
+    </template>
+  </div>
 </template>
 
 <script>
-  import fullscreen from 'vue-fullscreen';
-  import JQuery from "jquery";
-  import Vue from 'vue'
-  let $ = JQuery;
-  import {
+import {
     AUTH_CHECKCOOKIE
-  } from './plugins/auth'
-  import {
-    ADJUST_GRID_SIZE
-  } from './plugins/api'
-  import {
-    GRAB_LISTS
-  } from './plugins/api'
-  import {
-    SEARCH
-  } from './plugins/api'
-  import {
-    CHANGE_TITLE
-  } from './plugins/api'
-  import Landing from './components/Landing'
-  Vue.use(fullscreen)
-  export default {
-    name: 'App',
-    components: {
-      CurrentPage: Landing
-    },
-    created: function() {
-      if (!this.$store.getters.isAuthenticated) {
-        this.$store.dispatch(AUTH_CHECKCOOKIE)
-        this.$store.dispatch(GRAB_LISTS)
-      } else {
-        this.$router.push('/signin')
-      }
-    },
-    methods: {
-      back: function() {
-        this.$router.go(-1)
-      },
-      getGridListSize: function() {
-        const height = $(".test").offsetHeight;
-        const width = $(".test").offsetWidth;
-        console.log(height, width)
-        const itemQty = (height / 290) * (width / 180);
-        this.$store.dispatch(ADJUST_GRID_SIZE, itemQty)
-      },
-      toggleFullscreen() {
-        this.$refs['fullscreen'].toggle()
-      },
-      fullscreenChange(fullscreen) {
-        this.fullscreen = fullscreen
-      }
-    },
-    mounted() {
-  
-    },
-    data() {
-      return {
-        menuItems: [{
-            title: 'Home',
-            path: '/',
-            icon: 'home'
-          },
-          {
-            title: 'Sign In',
-            path: '/signin',
-            icon: 'lock_open'
-          },
-          {
-            title: 'Library',
-            path: '/series',
-            icon: 'library_books'
-          },
-          {
-            title: 'Publishers',
-            path: '/publishers',
-            icon: 'library_books'
-          },
-        ],
-        clipped: true,
-        drawer: false,
-        fixed: false,
-        miniVariant: false,
-        title: 'Test Title',
-        mainToolbar: false,
-        mainFooter: false,
-        search: '',
-  
-      }
-    },
-    computed: {
-      appTitle() {
-        return this.$store.state.api.appTitle
-      },
-      Lists() {
-        return this.$store.state.api.Lists
-      },
-      authed() {
-        return this.$store.getters.isAuthenticated
-      }
-    },
+} from "./plugins/auth";
+export default {
+  name: "App",
+  created() {
+    this.$vuetify.theme.dark = true;
+    this.$store.dispatch(AUTH_CHECKCOOKIE);
+  },
     watch: {
-      appTitle() {
-        this.title = this.appTitle
-      },
-      search() {
-        this.$store.dispatch(SEARCH, this.search)
-      },
-      authed() {
-        this.$nextTick(() => {
-          if (!this.authed) {
-            this.$store.dispatch(GRAB_LISTS)
-          }
-        })
+    loginStatus() {
+      if(this.loginStatus === 'loggedin'){
+        this.$router.push({name: 'Home'})
+      }else if(this.loginStatus === 'loggedout'){
+        this.$router.push({name: 'Login'})
       }
+    }
+
     },
-  }
+      computed: {
+      loginStatus() {
+        return this.$store.state.auth.status;
+      }
+      },
+  data() {
+    return {
+      drawer: false
+    };
+  },
+  
+};
+</script>
+},
+}
 </script>
 
 <style>
-  html {
-    overflow: scroll;
-    overflow-x: hidden;
-  }
-  
-  ::-webkit-scrollbar {
-    width: 0px;
-    /* remove scrollbar space */
-    background: transparent;
-  }
-  
-  .hidden {
-    display: none;
-  }
+html::-webkit-scrollbar {
+  width: 0 !important;
+}
+html {
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
+}
+/* .app-container{
+        display: flex;
+        min-height: 100%;
+} */
+/* Put the following in its own sheet? */
+.cellcontainer {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  width: 100px;
+  height: 200px;
+  margin: 8px;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
+.thumb {
+  position: relative;
+  height: 75%;
+  width: 100px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  position: relative;
+}
+.thumb img {
+  max-height: 100%;
+  overflow: hidden;
+  width: 100%;
+  box-shadow: 1px 1px 11px 0px #000;
+  border-radius: 3px;
+}
+
+a {
+  color: #444444;
+  text-decoration: none;
+  outline: none;
+}
+.label {
+  position: relative;
+  margin: 3px 0 0 0;
+  font-family: "Arial";
+  font-size: 0.6em;
+  height: 25%;
+  width: 100%;
+  overflow: hidden;
+  font-family: "Arial";
+  color: #fff;
+  text-align: center;
+}
+.imprintThumb {
+  position: absolute;
+  width: 36% !important;
+  bottom: 0;
+}
+
+.infThumb {
+  height: 100%;
+  width: 120px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+.infThumb img {
+  max-width: 100%;
+  max-height: auto;
+  vertical-align: middle;
+  box-shadow: 1px 1px 11px 0px #000;
+  border-radius: 5px;
+}
+
+.preview {
+  display: flex;
+  flex-direction: row;
+  margin: 1em;
+  align-items: center;
+  justify-content: space-around;
+}
+.preview img {
+  box-shadow: 1px 1px 11px 0px #000;
+}
+.summary {
+  height: 10em;
+  margin-left: 2em;
+  margin-right: 2em;
+}
+.publisherTbn {
+  height: 100px;
+  margin-left: 1em;
+}
+.infcover {
+  float: right;
+  margin-right: 2em;
+  height: 14em;
+}
+.infcover img {
+  height: 12em;
+}
+.progBar {
+  margin: 0;
+  position: absolute !important;
+  bottom: 4px;
+  z-index: 14;
+}
+
+.fade-enter-active {
+  transition: opacity 1.5s ease-in-out;
+}
+
+.fade-enter-to {
+  opacity: 1;
+}
+
+.fade-enter {
+  opacity: 0;
+}
+.loaded {
+  z-index: 0;
+}
+/* stack background */
+.thumbBkg {
+  transform: rotate(7deg);
+  background-color: white;
+  position: absolute;
+  left: 0%;
+  z-index: -1;
+}
+.seriesCount {
+  position: relative;
+  bottom: 0px;
+}
 </style>

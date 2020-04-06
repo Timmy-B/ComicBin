@@ -1,0 +1,529 @@
+<template>
+<v-container>
+    <v-dialog v-model="reader" fullscreen>
+        <!-- <v-card> -->
+
+        <div class="readerContainer" v-touch="{
+        left: () => cyclePages(1),
+        right: () => cyclePages(-1),
+      }">
+            <div :class="'loading'" v-if="loading" id="hide">
+                <v-progress-linear color="error" height="3" :value="this.loadProgress"></v-progress-linear>
+            </div>
+            <div class="readerPages" :style="this.readerStyle">
+              <transition name="pfade">
+                <img v-if="showPage1" class="page1" v-bind:style="page1style" :src="this.page1url"/>
+              </transition>
+              <transition name="pfade">
+                <img v-if="showPage2" class="page2" v-bind:style="page2style" :src="this.page2url"/>
+              </transition>
+              <!-- for caching pages -->
+              <img :src="this.page1url" hidden/>
+              <img :src="this.page2url" hidden/>
+              <img :src="this.page1url" hidden/>
+              <img :src="this.page2url" hidden/>
+            </div>
+            <v-dialog v-model="dialog" persistent max-width="600px">
+                <v-card>
+                    <v-img :src="this.coverPage" aspect-ratio="2.75" position="top"></v-img>
+                    <v-flex xs12>
+                        <small>{{issue.Caption}}</small>
+                    </v-flex>
+                    <v-card-text>
+                        <v-container grid-list-md>
+                            <v-layout wrap>
+                                <v-flex xs12>
+                                    <v-text-field label="Series" :value=issue.Series readonly></v-text-field>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <v-text-field label="Title" :value=issue.Title readonly></v-text-field>
+                                </v-flex>
+                                <v-flex xs12 sm6 md4>
+                                    <v-text-field label="Publisher" :value=issue.Publisher readonly></v-text-field>
+                                </v-flex>
+                                <v-flex xs12>
+                                    <v-textarea label="Summary" :value=issue.Summary rows=10 solo no-resize readonly></v-textarea>
+                                </v-flex>
+                            </v-layout>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn text color="red" v-on:click="exitReader()">Exit</v-btn>
+                        <v-spacer></v-spacer>
+                        <v-btn @click.stop="dual = !dual" text color="orange">DualReader: {{this.dual}}</v-btn>
+                        <v-btn @click.stop="manga = !manga" text color="orange">Manga: {{this.manga}}</v-btn>
+                        <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <div class="readerControls">
+                <div class="directions">
+                    <div class="directBtns nextReaderPage" v-on:click="cyclePages(1)">
+                        <span>►</span>
+                    </div>
+                    <div class="directBtns prevReaderPage" v-on:click="cyclePages(-1)">
+                        <span>◄</span>
+                    </div>
+                </div>
+
+                <div class="directBtns showReaderMenu" v-on:click="dialog = !dialog"></div>
+                <div class="directions">
+                    <div class="directBtns prevReaderPage" v-on:click="cyclePages(-1)">
+                        <span>◄</span>
+                    </div>
+                    <div class="directBtns nextReaderPage" v-on:click="cyclePages(1)">
+                        <span>►</span>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!-- </v-card> -->
+    </v-dialog>
+</v-container>
+</template>
+
+<script>
+// import { GRAB_ISSUE_PAGES } from "../plugins/api";
+import {
+    UPDATE_CURRENT_PAGE
+} from "../plugins/api";
+import axios from "axios";
+export default {
+    created() {
+        const itemID = this.$route.params.itemID
+        if (itemID != "") {
+            // if(this.publisher != ''){
+            this.$store.dispatch(GRAB_ISSUE, itemID);
+            this.showPage1=true
+        } else {
+            // go back
+        }
+    },
+    methods: {
+        exitReader() {
+            this.$router.go(-1);
+        },
+        nextPage() {
+            const manga = this.$store.state.api.manga;
+            if (manga) {
+                //  cyclePages("prev");
+            } else {
+                // cyclePages("next");
+            }
+        },
+        prevPage() {
+            const manga = this.$store.state.api.manga;
+            if (manga) {
+                //  cyclePages("next");
+            } else {
+                //  cyclePages("prev");
+            }
+        },
+        drawCanvas(url) {
+            var canvas = document.createElement('canvas')
+            var ctx = canvas.getContext('2d')
+            var img = new Image;
+            img.onload = function () {
+                ctx.drawImage(img, 0, 0); // Or at whatever offset you like
+                this.page1 = canvas.toDataURL();
+            }
+            img.src = url;
+
+        },
+        cyclePages(direction) {
+          this.showPage1 = false
+          this.showPage2 = false
+
+            setTimeout(()=>{
+            if (this.manga) {
+                direction = direction * -1;
+            }
+            var currPage = this.currentPage;
+            var lastPage = this.lastPage;
+            if (this.dual) {
+                switch (direction) {
+                    case 1:
+                        var nextPage = currPage + 1;
+                        var nextPage2 = nextPage + 1;
+                        console.log(nextPage)
+                        var nextPageRatio = this.pages[nextPage].size;
+                        var nextPage2Ratio = this.pages[nextPage2].size;
+                        if (nextPage <= lastPage) {
+                            this.page1url = this.pages[nextPage].src;
+                            this.currentPage = nextPage;
+                            console.log("page1:", nextPage);
+                        }
+                        if (nextPage2 <= lastPage) {
+                            this.page1classes = 'page1'
+                            if (nextPageRatio < 1 && nextPage2Ratio < 1) {
+                                this.page2style.display = "block"
+                                this.page2url = this.pages[nextPage2].src;
+                                this.currentPage = nextPage2;
+                                console.log("page2:", nextPage2);
+                                this.lastSingle = false;
+                            } else {
+                                this.page2style.display = 'none';
+                                this.lastSingle = true;
+                            }
+                        }
+                        break;
+                    case -1:
+                        var nextPage2 = Math.max(0, currPage - 1);
+                        var nextPage = Math.max(0, nextPage2 - 1);
+                        if (!this.lastSingle) {
+                            // last view was not a single page spread - jump back additional page
+                            nextPage2 = Math.max(0, nextPage2 - 1);
+                            nextPage = Math.max(0, nextPage2 - 1);
+                        }
+
+                        var nextPageRatio = this.pages[nextPage].size;
+                        var nextPage2Ratio = this.pages[nextPage2].size;
+                        if (nextPage <= lastPage) {
+                            this.page1url = this.pages[nextPage].src;
+                            this.currentPage = nextPage;
+                            console.log("page1:", nextPage);
+                        }
+                        if (nextPage < 1) {
+                            // reached fistPage
+                            this.page1url = this.pages[nextPage].src;
+                            this.currentPage = nextPage;
+                            this.page2style.display = "none"
+                        }
+                        if (nextPage2 <= lastPage && nextPage2 > 0) {
+                            if (nextPageRatio < 1 && nextPage2Ratio < 1) {
+                                this.page2style.display = "block"
+                                this.page2url = this.pages[nextPage2].src
+                                this.currentPage = nextPage2;
+                                console.log("page2:", nextPage2);
+                                this.lastSingle = false;
+                            } else {
+                                this.page1url = this.pages[nextPage2].src
+                                this.currentPage = nextPage2;
+                                this.page2style.display = "none"
+                                this.lastSingle = true;
+                            }
+                        }
+                        break;
+                }
+            } else {
+                switch (direction) {
+                    case 1:
+                        var nextPage = this.currentPage + 1;
+                        if (nextPage <= this.lastPage) {
+                            console.log("single page: Forward");
+                            this.page1url = this.pages[nextPage].src;
+                            this.currentPage = nextPage;
+                        }
+                        break;
+                    case -1:
+                        var nextPage = Math.max(0, this.currentPage - 1);
+                        if (nextPage >= 0) {
+                            console.log("single page: Backward");
+                            this.page1url = this.pages[nextPage].src;
+                            this.currentPage = nextPage;
+                        }
+                        break;
+                }
+            }
+
+          this.showPage1 = true
+          this.showPage2 = true
+                    }, 300);
+        },
+        buildPageArray(){
+            this.loading = true;
+            const PageCount = this.$store.state.api.selectedIssue[0].PageCount;
+            const issueID = this.$store.state.api.selectedIssue[0].Id;
+            const baseURL = this.baseURL;
+          this.coverPage = baseURL + "/BCR/Comics/" + issueID + "/Pages/0";
+                      if (this.currentPage > 0) {
+                this.page1url =
+                    baseURL + "/BCR/Comics/" + issueID + "/Pages/" + this.currentPage;
+            } else {
+                this.page1url = this.coverPage;
+            }
+
+            for (var i = 0; i < PageCount; i++) {
+              const srcUrl = baseURL + "/BCR/Comics/" + issueID + "/Pages/" + i;
+                this.pages[i] = {
+                            src: srcUrl,
+                            size: '',
+                            data: ''
+                }
+            }
+        },
+        async getRatios() {
+            this.loading = true;
+            const PageCount = this.$store.state.api.selectedIssue[0].PageCount;
+            const issueID = this.$store.state.api.selectedIssue[0].Id;
+            const baseURL = this.baseURL;
+            var apiKey = this.$store.state.auth.apiKey;
+            var ratio = [];
+            this.coverPage = baseURL + "/BCR/Comics/" + issueID + "/Pages/0";
+            if (this.currentPage > 0) {
+                this.page1url =
+                    baseURL + "/BCR/Comics/" + issueID + "/Pages/" + this.currentPage;
+            } else {
+                this.page1url = this.coverPage;
+            }
+
+            for (var i = 0; i < PageCount; i++) {
+                var cnt = i;
+                const url =
+                    baseURL + "/BCR/Comics/" + issueID + "/Pages/" + i + "/size";
+                const srcUrl = baseURL + "/BCR/Comics/" + issueID + "/Pages/" + i;
+                const x = i;
+                await axios({
+                        url: url,
+                        method: "GET",
+                        params: {
+                            apiKey: apiKey
+                        }
+                    })
+                    .then(resp => {
+                        this.loadProgress = (cnt / PageCount) * 100;
+                        const json = resp.data;
+                        const ratio = Math.floor(json.width / json.height)
+                        const spread =(ratio>0) ? 'spread' : 'single';
+                        this.pages[i] = {
+                            src: srcUrl,
+                            size: ratio,
+                            type: spread
+                        }
+                        // if(i==PageCount){
+                        //     this.page1url = this.pages[0].src
+                        // }
+                    })
+                    .catch(err => {
+                        // Vue.cookie.delete('BCR_USERNAME', {domain: 'localhost'});
+                        // Vue.cookie.delete('BCR_apiKey', {domain: 'localhost'});
+                    });
+            }
+          
+            this.loading = false;
+        }
+    },
+    computed: {
+        baseURL() {
+            var url = this.$store.state.api.baseURL;
+            return url;
+        },
+        issue() {
+            return this.$store.state.api.selectedIssue[0]
+        }
+    },
+    watch: {
+        dual: function () {
+            if (this.dual) {
+              if(this.currentPage != 0 && this.currentPage != 1 && this.pages[this.currentPage].type != 'spread' && this.pages[this.currentPage-1].type != 'spread' && this.pages[this.currentPage+1].type != 'spread' ){
+                this.page2style.display = "block"
+                }
+            } else {
+                this.page2style.display = "none"
+            }
+        },
+        manga: function () {
+            if (this.manga) {
+              this.readerStyle = "flex-direction:row-reverse"
+
+            } else {
+              this.readerStyle = "flex-direction:row"
+            }
+        },
+        currentPage: function () {
+            const id = this.$store.state.api.selectedIssue[0].Id;
+            this.$store.dispatch(UPDATE_CURRENT_PAGE, {
+                id: id,
+                currentPage: this.currentPage
+            });
+        }
+    },
+    mounted() {
+        var cmanga = this.$store.state.api.selectedIssue[0].Manga;
+        this.getRatios();
+        // this.buildPageArray()
+        if (cmanga == null || cmanga == false || cmanga.length == "") {
+            this.manga = false;
+        } else {
+            this.manga = true;
+        }
+    },
+    data() {
+        return {
+            loading:false,
+            reader: true,
+            dialog: false,
+            comicMenu: false,
+            currentPage: this.$store.state.api.selectedIssue[0].CurrentPage,
+            lastSingle: false,
+            lastPage: this.$store.state.api.selectedIssue[0].PageCount - 1,
+            page1url: "./logo.jpg",
+            coverPage: "",
+            page2url: "./logo.jpg",
+            pages: [],
+            readerStyle:"flex-direction:row",
+            showPage1: true,
+            showPage2: false,
+            page1style:{
+              display: 'block'
+            
+            },
+            page2style:{
+              display: 'none'
+            },
+            dual: true,
+            manga: false,
+            loadProgress: 0,
+        };
+    }
+};
+</script>
+
+<style>
+
+.readerControls {
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between
+}
+
+.directions {
+    height: 100%;
+    width: 12vw;
+    display: flex;
+    flex-direction: column;
+}
+
+.directBtns {
+    border-radius: 10px;
+    display: block;
+    transition: all 0.5s linear;
+    height: 100%;
+    width: 12vw;
+    background-color: #555555;
+    box-shadow: 1px 4px 4px rgba(0, 0, 0, 0.5),
+        0px 1px 0px rgba(255, 255, 255, 0.4) inset;
+}
+
+.directBtns:active {
+    opacity: 1;
+    transition: all 0s linear;
+}
+
+.loading {
+    position: absolute;
+    width: 100%;
+    z-index: 1000;
+}
+
+.comicMenu {
+    position: absolute;
+    background-color: black;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 80%;
+    width: 80%;
+    z-index: 1000;
+}
+
+.left {
+    left: 100%;
+}
+
+.prevReaderPage {
+    opacity: 0;
+    font-size: 4em;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 50%;
+}
+
+.nextReaderPage {
+    opacity: 0;
+    font-size: 4em;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    height: 50%;
+}
+
+.showReaderMenu {
+    position: absolute;
+    height: 50%;
+    width: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+}
+
+/* .showReaderMenu:active {
+    background-color: red;
+} */
+
+
+.readerContainer {
+    object-fit: scale-down;
+    height: 100%;
+    width: 100%;
+    background: black;
+}
+
+.readerPages {
+    object-fit: scale-down;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+.readerPages img {
+    object-fit: scale-down;
+    height: 100%;
+    min-width: 10%;
+    max-width: 100%;
+}
+
+.shownPage {
+    display: block;
+}
+
+.hidden {
+    display: none;
+}
+
+.manga {
+    flex-direction: row-reverse;
+}
+
+.pfade-enter-active {
+  transition: all .3s ease;
+}
+.pfade-leave-active {
+  transition: all .3s ease;
+}
+.pfade-enter, .pfade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
+</style>

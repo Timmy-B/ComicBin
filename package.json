@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "ComicBin",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,28 +8,39 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "axios": "^0.18.0",
-    "axios-cookiejar-support": "^0.4.2",
-    "fuse.js": "^3.2.1",
-    "jquery": "^3.3.1",
-    "lodash": "^4.17.11",
-    "tough-cookie": "^2.4.3",
-    "vue": "^2.5.17",
+    "apexcharts": "^3.16.1",
+    "axios": "^0.19.2",
+    "core-js": "^3.6.4",
+    "element-ui": "^2.13.0",
+    "eslint-plugin-vuetify": "^1.0.0-beta.6",
+    "jquery": "^3.4.1",
+    "lodash": "^4.17.15",
+    "material-design-icons-iconfont": "^5.0.1",
+    "vue": "^2.6.11",
+    "vue-apexcharts": "^1.5.2",
+    "vue-axios": "^2.1.5",
+    "vue-clazy-load": "^0.4.2",
     "vue-cookie": "^1.1.4",
-    "vue-fullscreen": "^2.1.3",
-    "vue-fuse": "^2.0.2",
-    "vue-resource": "^1.5.1",
-    "vue-router": "^3.0.1",
-    "vuetify": "^1.0.19",
-    "vuex": "^3.0.1"
+    "vue-fullscreen": "^2.1.6",
+    "vue-fuse": "^2.2.1",
+    "vue-router": "^3.1.6",
+    "vuetify": "^2.2.17",
+    "vuex": "^3.1.3"
   },
   "devDependencies": {
-    "@babel/polyfill": "^7.0.0-beta.49",
-    "@vue/cli-plugin-babel": "^3.0.1",
-    "@vue/cli-plugin-eslint": "^3.0.1",
-    "@vue/cli-service": "^3.0.1",
-    "vue-cli-plugin-vuetify": "^0.1.6",
-    "vue-template-compiler": "^2.5.17"
+    "@vue/cli-plugin-babel": "^4.2.3",
+    "@vue/cli-plugin-eslint": "^4.2.3",
+    "@vue/cli-service": "^4.2.3",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-vue": "^6.2.2",
+    "sass": "^1.26.3",
+    "sass-loader": "^8.0.2",
+    "stylus": "^0.54.7",
+    "stylus-loader": "^3.0.2",
+    "vue-cli-plugin-vuetify": "~2.0.5",
+    "vue-template-compiler": "^2.6.11",
+    "vuetify-loader": "^1.4.3"
   },
   "eslintConfig": {
     "root": true,
@@ -37,10 +48,35 @@
       "node": true
     },
     "extends": [
-      "plugin:vue/essential",
+      "plugin:vue/recommended",
       "eslint:recommended"
     ],
-    "rules": {},
+    "rules": {
+      "no-console": "off",
+      "vue/no-async-in-computed-properties": "warning",
+      "vue/no-dupe-keys": "warning",
+      "vue/no-duplicate-attributes": "warning",
+      "vue/no-parsing-error": "warning",
+      "vue/no-reserved-keys": "warning",
+      "vue/no-shared-component-data": "warning",
+      "vue/no-side-effects-in-computed-properties": "warning",
+      "vue/no-template-key": "warning",
+      "vue/no-textarea-mustache": "warning",
+      "vue/no-unused-components": "warning",
+      "vue/no-unused-vars": "warning",
+      "vue/no-use-v-if-with-v-for": "warning",
+      "vue/require-render-return": "warning",
+      "vue/require-component-is": "warning",
+      "vue/valid-v-on": "warning",
+      "vue/valid-v-once": "warning",
+      "vue/valid-v-pre": "warning",
+      "vue/valid-v-show": "warning",
+      "vue/valid-v-text": "warning",
+      "vue/require-prop-type-constructor": "warning",
+      "vue/require-valid-default-prop": "warning",
+      "vue/return-in-computed-property": "warning",
+      "vue/use-v-on-exact": "warning"
+    },
     "parserOptions": {
       "parser": "babel-eslint"
     }
@@ -52,7 +88,6 @@
   },
   "browserslist": [
     "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
+    "last 2 versions"
   ]
 }
