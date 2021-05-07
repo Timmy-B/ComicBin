@@ -14,7 +14,7 @@
     "element-ui": "^2.13.0",
     "eslint-plugin-vuetify": "^1.0.0-beta.6",
     "jquery": "^3.4.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "material-design-icons-iconfont": "^5.0.1",
     "vue": "^2.6.11",
     "vue-apexcharts": "^1.5.2",
